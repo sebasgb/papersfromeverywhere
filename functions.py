@@ -70,20 +70,20 @@ def getQueryString(query):
     return queryString
 
 def concatORTitleAbsKey(termList): 
-    combinationOr ='TITLE-ABS-KEY("'+ termList.pop() + '")'
-    for x in termList:       
+    combinationOr ='TITLE-ABS-KEY("'+ termList[0] + '")'
+    for x in termList[1:]:       
         combinationOr += ' OR TITLE-ABS-KEY("'+ x +'")' 
     return combinationOr
 
 def concatORTitle(termList): 
-    combinationOr ='TITLE("'+ termList.pop() + '")'
-    for x in termList:       
+    combinationOr ='TITLE("'+ termList[0]  + '")'
+    for x in termList[1:]:       
         combinationOr += ' OR TITLE("'+ x +'")'   
     return combinationOr  
 
 def concatORSubjectAreas(subjectAreas): 
-    combinationOr ='SUBJAREA('+ subjectAreas.pop() + ')'
-    for x in subjectAreas:       
+    combinationOr ='SUBJAREA('+ subjectAreas[0] + ')'
+    for x in subjectAreas[1:]:       
         combinationOr += ' OR SUBJAREA('+ x +')'   
     return combinationOr  
 
@@ -171,3 +171,13 @@ def printDOIs(CSVFilename):
         string = string[:-1]
     
     print(string)
+
+def mergeCSVSFromFolder(folder_path):
+    csv_list = []
+    for file in os.listdir(folder_path):
+        if file.endswith('.csv'):
+            file_path = os.path.join(folder_path, file)
+            df = pd.read_csv(file_path)
+            csv_list.append(df)
+    combined_csv = pd.concat(csv_list, ignore_index=True)
+    combined_csv.to_csv('Queries/queriesCombined.csv', index=False)
